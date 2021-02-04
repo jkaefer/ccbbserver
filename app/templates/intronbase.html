@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CCBB-Suite</title>
+  <meta charset="utf-8">
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js" >
+  </script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
+
+
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='regSNP-intron_files/mystyle.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="icon" href="{{ url_for('static', filename='regSNP-intron_files/iu_tab.jpg') }}"/>
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+  <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+  <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+  <script src="//www.biodalliance.org/release-0.13/dalliance-compiled.js" crossorigin="anonymous"></script>
+  <!--<script src="{{ url_for('static', filename='js/ASPlot.js') }}"></script>-->
+  
+
+  <script>
+  $(document).ready(function () {
+  
+      $('#input_form').validate({
+          rules: {
+              input_text: {
+                  required: "#InputFile:blank"
+              },
+              input_file: {
+                  required: "#TextArea:blank"
+              },
+              userid: {
+                  required: "#InputID:blank"
+              }
+          },
+  		messages: {
+              input_text: {
+                  required: "Please paste input or upload file"
+              },
+              input_file: {
+                  required: "Please paste input or upload file"
+              },
+              userid: {
+                  required: "Please provide descriptor or name"
+              }
+          },
+          highlight: function (element) {
+              $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+          },
+          success: function (element) {
+              $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+          }
+      });
+  
+  });
+  $(function(){
+    $('#intronexample').click(function()
+    {
+        $("#TextArea").load("{{ url_for('static', filename='sampleintron.txt') }}");
+    });
+  });
+  //THESE FUNCTIONS ARE FOR SPLICING
+  $(function(){
+    $('#spliceexample').click(function()
+    {
+        $("#TextArea").load("{{ url_for('static', filename='samplesplicing.txt') }}");
+    });
+  });
+  
+  function ClearInput(element) {
+		document.getElementById("input_format").value = "";}
+function result_page (f) {
+	return f.elements.file.value + '.html'
+}
+
+function updateTextArea() {         
+    var allVals = [];
+    $('#c_b :checked').each(function() {
+	allVals.push($(this).val());
+    });
+    $('#t').val(allVals);
+}
+$(function() {
+    $('#c_b input').click(updateTextArea);
+    updateTextArea();
+    });
+    
+
+ //$(function() {
+//var fs = require('fs');
+//var fileList = fs.readdirSync('~/Documents/microblog/app/allJobs');
+/*
+var fileList=[
+       "ActionScript",
+       "Bootstrap",
+       "C",
+       "C++",
+    ];
+$( "#automplete-1" ).autocomplete({
+console.log(fileList)
+source: fileList
+});*/
+ //});
+  </script>
+</head>
+
+
+<body>
+
+<div class="container-fluid">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+		<a class="navbar-brand" href="/"><img style="width: 52px;" src="{{ url_for('static', filename='regSNP-intron_files/iu_tab.jpg') }}"></a>
+      </div>
+  
+      <!-- Collect the nav links and other content for toggling -->
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          
+		  <!--<li><a href="https://regsnps-intron.ccbb.iupui.edu/document.html">Document</a></li>-->
+          <!--<li><a href="https://regsnps-intron.ccbb.iupui.edu/about.html">About</a></li>-->
+          <li class="dropdown"> 
+            <a href="https://regsnps-intron.ccbb.iupui.edu/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Articles <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a target="_self" href="https://www.biorxiv.org/content/10.1101/515171v1.full" >regSNP-intron</a></li>
+              <li><a target="_self" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5602096/">regSNP-splicing</a></li>
+              <li><a target="_self" href="https://pubmed.ncbi.nlm.nih.gov/27604408/">ExonImpact</a></li>
+            </ul>
+          </li>
+          <li class="dropdown"> 
+            <a href="{{ url_for('index') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a target="_self" href="{{ url_for('intronSub') }}" >regSNP-intron</a></li>
+              <li><a target="_self" href="{{ url_for('spliceSub') }}">regSNP-splicing</a></li>
+              <li><a target="_self" href="{{ url_for('exonSub') }}">ExonImpact</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="http://annovar.openbioinformatics.org/en/latest/" target="_blank" method="POST" action="/index" name='annovar'>ANNOVAR</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown"> 
+            <a href="https://regsnps-intron.ccbb.iupui.edu/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Github <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="https://github.com/yliulab/regsnp_intron" target="_blank">regSNP-intron</a></li>
+              <li><a href="https://github.com/yliulab/regsnp_intron" target="_blank">regSNP-splicing</a></li>
+              <li><a href="https://github.com/regSNPs/ExonImpact" target="_blank">ExonImpact</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  
+  <div class="container-fluid">
+    <div class="row content">
+      <div class="col-sm-3 sidenav" style="width:25%">
+        <h4>Resources</h4>
+        <ul class="nav nav-pills nav-stacked">
+          <li><a href="http://www.hgmd.cf.ac.uk/ac/index.php" target="_blank">HGMD</a></li>
+          <li><a href="http://www.1000genomes.org/" target="_blank">1000 Genomes</a></li>
+          <li><a href="http://www.ncbi.nlm.nih.gov/clinvar/" target="_blank">ClinVar</a></li>
+        </ul><br>
+      </div>
+  	
+  	{% block content %}{% endblock %}
+      
+    </div>
+  </div>
+  
+  <footer class="container-fluid">
+	<small>
+	<p class="text-center">© 2016 CCBB</p>
+	<address><p class="text-center"><a href="mailto:yunliu@iupui.edu">Contact Us</a></p></address>
+	</small>
+  </footer>
+</div>
+
+
+</body>
+</html>
+
+

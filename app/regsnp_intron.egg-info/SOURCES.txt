@@ -1,0 +1,4 @@
+regsnp_intron.egg-info/PKG-INFO
+regsnp_intron.egg-info/SOURCES.txt
+regsnp_intron.egg-info/dependency_links.txt
+regsnp_intron.egg-info/top_level.txt

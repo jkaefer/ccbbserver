@@ -1,0 +1,87 @@
+#!usr/bin/perl
+use warnings;
+
+my $infile = $ARGV[0];# input SNP file
+my $desp   = $ARGV[1]; # description for input file
+my $archive = $ARGV[2];
+
+#print "<p>$infile</p> <p>$desp</p> <p>$archive</p>";
+
+### get reference seq for each exon with SNPs
+#print "......(1/9) extracting exon and neighboring intron sequences......\n";
+`perl ./source/code_package/PrepareSeq/extract_target_sequence.pl $infile $desp $archive `;
+#print "<p>$status</p>";
+
+# exon/intron length
+#print "......(2/9) calculating length of exon and neighboring introns......\n";
+`perl ./source/code_package/ExonIntronLen/exon_intron_length.pl $desp $archive`;
+#print "<p>$status</p>";
+
+# SR_protein matching score
+#print "......(3/9) calculating Splicing factor binding affinity score......\n";
+$status = `perl ./source/code_package/SFProtein/SR_protein.score.pl ./source/code_package/db/motif/SRSF1.pssm $desp $archive`;
+`perl ./source/code_package/SFProtein/SR_protein.score.pl ./source/code_package/db/motif/SRSF2.pssm $desp $archive`;
+`perl ./source/code_package/SFProtein/SR_protein.score.pl ./source/code_package/db/motif/SRSF5.pssm $desp $archive`;
+`perl ./source/code_package/SFProtein/SR_protein.score.pl ./source/code_package/db/motif/SRSF6.pssm $desp $archive`;
+#print "<p>$status</p>";
+
+# junction score
+#print "......(4/9) calculating junction score of SNPs affected exons......\n";
+ `perl ./source/code_package/JunctionScore/junction_score.pl $desp $archive`;
+#print "<p>$status</p>";
+
+#evolution
+#print "......(5/9) calculating the average conservation score(Phylop) for +/- 5bp around SNP......\n";
+ `perl ./source/code_package/db/phylop_score/acess.phylop.pl $desp.snp.ref.mut.seq.mutBed $archive`;
+#print "<p>$status</p>";
+
+#all RBP
+#print "......(6/9) calculating the effect of distuptions in RNA binding proteins(RBPs)......\n";
+ `perl ./source/code_package/RBP/cal_RBP_matching_score.pl $desp.snp.ref.mut.seq $archive`;
+#print "<p>$status</p>";
+ `Rscript ./source/code_package/RBP/magnitude_postProb.r $desp.snp.ref.mut.seq $archive`;
+#print "<p>$status</p>";
+
+##cluster score & ESR-HS score
+#print "......(7/9) calculating the disruption of ESE/ESS in exons......\n";
+ `perl ./source/code_package/ClusterScore/cluster_score.pl $desp.snp.ref.mut.seq $archive`;# generate cluster score
+#print "<p>$status</p>";
+
+##PTM, Pfam, disorder score
+#print "......(8/9) calculating the protein function level information:Pfam, PTM and protein disorder score......\n";
+ `perl ./source/code_package/PfamPTMDisorder/pfam_ptm_disorderScore.pl $desp.snp.ref.mut.seq $archive`;
+#print "<p>$status</p>";
+
+#ASA,SS feature
+#print "......(9/9) calculating the protein physical characteristics:Secondary structure(alpha-helix, beta-sheet and coil) and Accessible surface area(ASA)......\n";
+ `Rscript ./source/code_package/ASASS/norm_asa_ss.r $desp $archive`;
+#print "<p>$status</p>";
+
+##combine data together
+#print "......combine features together......\n";
+ `Rscript ./source/code_package/pipeline.selectedFeature.r $desp $archive`;
+#print "<p>$status</p>";
+
+#`cat weka.head.inner $desp.weka.data.inner.pred.body > $desp.weka.data.inner.pred.arff`;
+#`cat weka.head.ss    $desp.weka.data.ss.pred.body    > $desp.weka.data.ss.pred.arff`;
+
+#mkdir $desp if !-e $desp;
+#`mv $desp.* $archive`;
+my $var_c = 0;
+$var_c = `wc -l < $archive/$desp.weka.data.inner.info`;
+chomp($var_c);
+#print "<p>$var_c</p>";
+if($var_c >0){
+ `perl ./source/code_package/model/roc.test.sh ./source/code_package/model/exonBody.model $archive/$desp.weka.data.inner.pred.arff $desp.exonBody $archive`;
+}
+#print "<p>$status</p>";
+
+$var_c = `wc -l < $archive/$desp.weka.data.ss.info`;
+chomp($var_c);
+#print "<p>$var_c</p>";
+if($var_c >0){
+ `perl ./source/code_package/model/roc.test.sh ./source/code_package/model/ss.model       $archive/$desp.weka.data.ss.pred.arff $desp.splicingSite $archive`;
+}
+#print "<p>$status</p>";
+
+

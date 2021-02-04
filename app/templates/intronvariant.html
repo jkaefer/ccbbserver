@@ -1,0 +1,61 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+
+
+      
+<div class="col-sm-9">
+        <h1>regSNP-Intron</h1>
+        <p>regSNP-Intron: Prediction of disease-causing probability of human intronic single nucleotide variants (iSNVs).</p>
+        <br>
+        <p><strong>Visualize sample output <a href="{{ url_for('intronRes') }}/?query_id=query_1548041960" target="_blank">here</a>.</strong></p>
+  	
+        <form action="{{ url_for('intronSub') }}" method="post" enctype="multipart/form-data" id="input_form">
+          <div class="row">
+            <div class="form-group col-xs-6">
+			  <label for="TextArea">Or paste input here (<a href="javascript:;" id="intronexample">use example</a>)</label>
+              <textarea name="input_text" class="form-control" id="TextArea" rows="10" placeholder="chr1 100 A G"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="InputFile">Or upload a file</label>
+            <input type="file" name="input_file" class="form-control-file" id="InputFile" aria-describedby="fileHelp">
+            <small id="fileHelp" class="form-text text-muted">size limit: 10K rows</small>
+          </div>
+          <div class="row">
+            <div class="form-group col-xs-6">
+              <label for="SelectFormat">Input Format</label>
+              <select name= "inputFormat" class="form-control" id="SelectFormat">
+                <option>txt</option>
+                <option>vcf</option>
+              </select>
+            </div>
+          </div>
+		  <div class="row">
+			<div class="form-group col-xs-6">
+              <label for="SelectAssembly">Genome Assembly</label>
+              <select name= "assembly" class="form-control" id="SelectAssembly">
+                <option>CRCh37/hg19</option>
+              </select>
+            </div>
+		  </div>
+          <div class="row">
+		    <div class="form-group col-xs-6">
+		      <label for="InputID">Job Descriptor</label>
+		      <input name="userid" class="form-control" id="InputID" aria-describedby="userhelp" placeholder="Enter Description">
+		      <small id="userhelp" class="form-text text-muted">(For organizing jobs)</small>
+			</div>	
+		</div>
+          <div class="row">
+            <div class="form-group col-xs-6">
+              <label for="InputEmail">Email address</label>
+              <input type="email" name="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">(Optional. If provided, notification will be sent to this email.)</small>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      
+{% endblock %}

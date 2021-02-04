@@ -1,0 +1,37 @@
+#!/bin/sh
+
+#echo "run weka .....\n"
+#run weka
+export WEKAHOME=/opt/weka/
+export CLASSPATH=$WEKAHOME/weka.jar
+#java -classpath $CLASSPATH:weka.jar:libsvm.jar
+#java  weka.classifiers.bayes.BayesNet -i -p 0   -t $1  -threshold-file tth2.arff -threshold-label 1 >1.re
+#java  weka.classifiers.bayes.BayesNet -i -p 0 -l hgmd.model  -T $1  -threshold-file tth2.arff -threshold-label 1 > $1.1.re
+#java  weka.classifiers.bayes.BayesNet -i -d hgmd.model -t $1  -threshold-file tth2.arff -threshold-label 1 >1.re
+#java  weka.classifiers.functions.MultilayerPerceptron -p 0  -i -t $1  -threshold-file tth2.arff -threshold-label 1 >1.re
+#java  weka.classifiers.functions.MultilayerPerceptron  -i -k -p 1-8  -d hgmd.model  -t $1  -T HGMD-TG.weka.test.arff -threshold-file tth2.arff -threshold-label 1 >1.re
+#java  weka.classifiers.functions.LibSVM -B -Z -i  -t $1 -p 0 -threshold-file tth2.arff -threshold-label 1 >1.re
+
+
+#java  weka.classifiers.trees.RandomForest -I 36 -K 51 -S 1 -i  -t $1 -threshold-file tth2.arff -threshold-label 1  >1.re
+
+
+#java  weka.classifiers.trees.RandomForest -I 36 -K 51 -S 1  -i -d exonBody.model -t $1  -threshold-file tth2.arff -threshold-label 1 > 1.re
+#java  weka.classifiers.trees.RandomForest -I 36 -K 51 -S 1  -i -d ss.model    -t $1  -threshold-file tth2.arff -threshold-label 1 > 1.re
+
+java  weka.classifiers.trees.RandomForest -i  -l $1 -T $2 -threshold-file $3.tth2.arff -threshold-label 1 > $3.re
+#java  weka.classifiers.trees.RandomForest -i  -l $1 -T $2  -threshold-file tth2.arff -threshold-label 1 > 1.re
+
+
+
+#java weka.classifiers.bayes.NaiveBayes -i -t $1 -p 0  -threshold-file tth2.arff -threshold-label 1 >1.re
+#java weka.classifiers.functions.Logistic -t $1 -i  -threshold-file tth2.arff -threshold-label 1 >1.re
+
+echo "$1 MCC:";
+#compute MCC
+perl mcc.pl $3.tth2.arff $3.re
+#perl mcc.pl tth2.arff ss.re
+
+awk 'NR > 17 {print $0}' $3.tth2.arff > stat.$3
+#plot ROC
+#R CMD  BATCH roc.r

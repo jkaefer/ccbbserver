@@ -1,0 +1,172 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+<script>
+  var query_id = "{{query_id}}";
+  var data_file = "app/allJobs/Splicejob_" + query_id + "/modded.query.exonic_snp_disease_causing_probabilty.combine";
+  $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'throw';
+    $('#resultTable').DataTable( {
+	    "processing": true,
+        "scrollX": true,
+		"ajax":{ type: 'GET',url: data_file},  
+        "columns": [
+            { "data": "chr" },
+            { "data": "pos" },
+            { "data": "ref" },
+            { "data": "alt" },
+            { "data": "disease prob" },
+            { "data": "FDR"},
+            { "data": "transcript"},
+            { "data": "ON/OFF splicing site"},
+            { "data": "upstream intron length" },
+            { "data": "exon length" },
+            { "data": "downstream intron length" },
+            { "data": "proximity acceptor site"},
+            { "data": "proximity donor site"},
+            { "data": "conservation"},
+            { "data": "acceptor_site strength"},
+            { "data": "donor_site strength"},
+            { "data": "junction score change"},
+            { "data": "PTM"},
+            { "data": "Pfam"}
+        ]
+    } );
+    
+    var table = $('#resultTable').DataTable();
+
+    $('#resultTable tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('info') ) {
+            $(this).removeClass('info');
+        }
+        else {
+            table.$('tr.info').removeClass('info');
+            $(this).addClass('info');
+		}
+		var record = table.row(this).data();
+        console.log(record['chr'].substring(3));
+        browser.setLocation(record['chr'].substring(3), parseInt(record['pos']) - 50, parseInt(record['pos']) + 50);
+    } );
+    var browser =  new Browser({
+      chr:          '22',
+      viewStart:    30700000,
+      viewEnd:      30900000,
+
+      coordSystem: {
+        speciesName: 'Human',
+        taxon: 9606,
+        auth: 'GRCh',
+        version: '37',
+        ucscName: 'hg19'
+      },
+
+      sources:     [{name:                 'Genome',
+                     twoBitURI:            '//www.biodalliance.org/datasets/hg19.2bit',
+                     tier_type:            'sequence'},
+                    {name:                 'Genes',
+                     desc:                 'Gene structures from GENCODE 19',
+                     bwgURI:               '//www.biodalliance.org/datasets/gencode.bb',
+                     stylesheet_uri:       '//www.biodalliance.org/stylesheets/gencode.xml',
+                     collapseSuperGroups:  true,
+                     trixURI:              '//www.biodalliance.org/datasets/geneIndex.ix'},
+                    {name:                 'Repeats',
+                     desc:                 'Repeat annotation from Ensembl',
+                     bwgURI:               '//www.biodalliance.org/datasets/repeats.bb',
+                     stylesheet_uri:       '//www.biodalliance.org/stylesheets/bb-repeats.xml'},
+                    {name:                 'Conservation',
+                     desc:                 'Conservation', 
+                     bwgURI:               'app/regsnp-intron/annotation/hg19.100way.phyloP100way.bw',
+                     noDownsample:         true}],
+
+    });
+
+
+  } );
+  $(function(){
+    $.ajax({
+      type: 'HEAD',
+      url: data_file,
+      success: function() {
+        $("#message").addClass("alert-success").html("<strong>The full result with all the features can be downloaded here: <a download href='" + "app/allJobs/Splicejob_" + query_id + "/query.exonic_snp_disease_causing_probabilty.combine" + "' target='_blank'>splicing prediction</a>.</strong>");
+      },
+      error: function() {
+        $("#message").addClass("alert-danger").html("<strong>The job may still be running or an error has occurred. Please check the <a href='spliceRes?query_id=" + query_id + "'>submission page</a>.</strong>");
+      }
+    });
+  });
+
+
+ 
+  
+  
+  </script>
+
+
+<div class="col-sm-9">
+		<h1>regSNP-splicing</h1>
+		
+		<!--<div><p><mark><b>Download your prediction result & analysis log here:</b></mark><p>
+		<p><a href= "app/allJobs/Splicejob_{{query_id}}/query.exonic_snp_disease_causing_probabilty.combine">Download prediction result</a>, <a href="app/allJobs/Splicejob_{{query_id}}/query.invalid_input" > View invalid input variant</a> </p></div>-->
+
+
+		<p>We suggest using FDR as cut-off: FDR<0.05 as deleterious, 0.05<=FDR<0.5 as potential deleterious, and 0.5<=FDR<=1 as benign.</p>
+
+		<p><b>Predictions for input SNVs </b>(Click on column name to sort)</p>
+		<!-- <p id="message"></p> -->
+		<div id="message" class="alert"></div>
+
+        </p>
+        <table id="resultTable" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+          <thead>
+              <tr>
+                   <th>chr</th>
+		    <th>pos</th>
+		    <th>ref</th>
+		    <th>alt</th>
+		    <th>disease prob</th>
+		    <th>FDR</th>
+		    <th>transcript</th>
+		    <th>ON/OFF splicing site</th>
+		    <th>upstream intron length</th>
+		    <th>exon length</th>
+		    <th>downstream intron length</th>
+		    <th>proximity acceptor site</th>
+		    <th>proximity donor site</th>
+		    <th>conservation</th>
+		    <th>acceptor_site strength</th>
+		    <th>donor_site strength</th>
+		    <th>junction score change</th>
+		    <th>PTM</th>
+		    <th>Pfam</th>
+              </tr>
+          </thead>
+        </table>
+        <div id="svgHolder" ></div>
+        
+
+
+
+
+
+
+
+
+
+<hr><tr><p>If you have any problem with the website, please contact:<a href=\"mailto:yunliu\@iupui.edu\" target=\"_top\">Yunlong Liu</a>,or <a href=\"mailto:zhangxin\@umail.iu.edu\" target=\"_top\">Xinjun Zhang</a>.</p></tr>
+
+
+
+
+
+
+
+
+  
+  
+
+  
+</div>
+      
+  
+{% endblock %}

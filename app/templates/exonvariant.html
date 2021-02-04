@@ -1,0 +1,52 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+<div class="col-sm-9">
+	<h1>ExonImpact</h1>
+        <p> ExonImpact: Prioritizing Pathogenic Alternative Splicing Events </p>
+	<form action="/exonSub" method="post" enctype="multipart/form-data" id="input_form">
+		
+		
+			<h4>
+				The input can be miso events format (SE,RI,A3SS,A5SS) or  bed format. </br>
+				The input examples list as below:
+			</h4>
+			<p id="example">
+			Example:chrX:154018228:154018297</br>
+				
+			Example:chrX:154033547:154033802:-@chrX:154018229:154018297:-@chrX:154014479:154014675:-</br>
+			Example:chr12:56553371:56553406:+@chr12:56553759|56553809:56553932:+</br>
+			Example:chr3:150285689-150285716:+@chr3:150285800-150285833:+</br>						
+		
+			</p>
+		<div class="row">
+            		<div class="form-group col-xs-6">
+              			<textarea name="input_text" class="form-control" id="TextArea" rows="10" placeholder=""></textarea>
+            		</div>
+            	</div>
+		<div class="form-group">
+			<input type="file" name="input_file" class="form-control-file" id="InputFile" aria-describedby="fileHelp"></input>
+		</div>
+		<div class="row">
+		    <div class="form-group col-xs-6">
+		      <label for="InputID">Job Descriptor</label>
+		      <input name="userid" class="form-control" id="InputID" aria-describedby="userhelp" placeholder="Enter Description">
+		      <small id="userhelp" class="form-text text-muted">(For organizing jobs)</small>
+			</div>	
+		</div>
+		<div class="row">
+		    <div class="form-group col-xs-6">
+		      <label for="InputEmail">Email address</label>
+		      <input type="email" name="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+		      <small id="emailHelp" class="form-text text-muted">(Optional. If provided, notification will be sent to this email.)</small>
+		</div>
+          </div>
+		
+		<button type="submit"  class="btn btn-primary">Submit</button>
+		
+				
+	</form>
+      </div>
+      
+{% endblock %}

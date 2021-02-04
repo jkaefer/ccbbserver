@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h1>Create Job</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.p1name.label }}<br>
+            {{ form.p1name(size=32) }}<br>
+	    {% for error in form.p1name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.p2name.label }}<br>
+            {{ form.p2name(size=32) }}<br>
+	    {% for error in form.p2name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

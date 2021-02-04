@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: regsnp-intron
+Version: 0.1.6
+Summary: Predict disease-causing probability of human intronic SNVs.
+Home-page: https://github.com/linhai86/regsnp_intron
+Author: linhai
+Author-email: linhai@iupui.edu
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics

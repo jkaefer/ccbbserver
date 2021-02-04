@@ -1,0 +1,5 @@
+{
+	"annovar_path": "~/data3/regsnp_intron/code/v2/annovar",
+	"annovar_db_path": "~/data3/regsnp_intron/code/v2/annovar/humandb",
+	"db_dir": "~/data3/regsnp_intron/code/v2/regsnp_intron/db"
+}

@@ -1,0 +1,23 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+
+<div class="col-sm-9">
+
+<script  type="text/javascript">
+function timeReload(timeoutPeriod){
+    setTimeout("location.reload(true);",timeoutPeriod);
+}
+</script>
+
+
+</head>
+<body bgcolor="white" onload = "JavaScript:timeReload(2000);" >
+<h3>
+Your data has been successfully uploaded. </br> It will be ready for display momentarily. </br></br> Or save the following <a href= "{{ url_for('exonRes') }}?query_id={{query_id}}" > link </a> and retrieve your result later.
+</h3>
+
+
+</div>
+{% endblock %}

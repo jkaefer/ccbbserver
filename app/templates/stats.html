@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <h1>Hi, {{ session.username }}!</h1>
+	<hr>
+	<u><p>Statistics</p></u>
+	<div class='row'>
+        <canvas id="line-chart" ></canvas>
+	</div>
+	
+	<p></p>
+	    
+            {% if session.showelem!=None%}
+    	     <div class='row'>
+		<table style="border-style:solid;border-color:black;" id="example" class="display" cellspacing="0" width="100%">
+			<thead>
+			    <tr>
+				<th>Protein 1</th>
+				<th>P1 Species</th>
+				<th>Protein 2</th>
+				<th>P2 Species</th>
+				<th>Affinity</th>
+			    </tr>
+			</thead>
+			<tbody>
+            {% for elem in session.showelem %}
+		    <tr>
+		        <td>{{elem[0][0]}}</td>
+		        <td>{{elem[1][0]}}</td>
+		        <td>{{elem[2][0]}}</td>
+		        <td>{{elem[3][0]}}</td>
+		        <td>{{elem[4]}}</td>
+		        
+		    </tr>
+            {% endfor %}
+		</tbody>
+	</div>
+            <script>
+                console.log('hi');
+                var labels={{session.jlbl | tojson}}
+                //console.log(labels);
+                var data={{session.jaff | tojson}}
+                new Chart(document.getElementById("line-chart"),{
+                "type":"line",
+                "data":
+                        //using the labels here.
+                        {"labels":labels,
+                        "datasets":[{"label":"Affinity",
+                        //using data here
+                        "data": data,
+                        "fill":false,
+                        "borderColor":"rgb(75, 192, 192)",
+                        "lineTension":0.1}]},
+                "options":{title: {
+                    display: true,
+                    text: 'All of your comparisons',
+                    responsive: true
+                }}});
+		
+                //var data={{session.jaff | safe}}
+                //console.log(data);
+                //console.log(labels);
+
+            </script>
+            {%endif%}
+{% endblock %}
+
+

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h1>Create Job</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+	<p> Select Protein 1: </p>
+	<select name= prot1 style="overflow-y: scroll;">
+	    {% for colour in session.ppairs %}
+	    <option value= "{{colour[1]}}" >{{colour[0]}}-{{colour[1]}}</option>"
+	    {% endfor %}
+	</select>
+	<p> Select Protein 2: </p>
+	<select name= prot2 style="overflow-y: scroll;">
+	    {% for colour in session.ppairs %}
+	    <option value= "{{colour[1]}}" >{{colour[0]}}-{{colour[1]}}</option>"
+	    {% endfor %}
+	</select>
+	<p></p>
+	
+        <p>{{ form.submit() }}</p>
+
+    </form>
+{% endblock %}

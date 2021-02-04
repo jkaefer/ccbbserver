@@ -1,0 +1,29 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+<div class="col-sm-9">
+        <h1>Submission</h1>
+	<p>Your query has been submitted. The job (id={{query_id}}) is currently running. Once the job is done, the result link will be generated for you.</p>
+	<br><p>This page will redirect to results upon completion.</p><br>
+	
+	<p style="visibility:hidden" id="results"></p>
+	<br></br>
+	<strong style="visibility: hidden" id="finished"><p>Your job is finished:  "</p></strong>
+	<a style="visibility: hidden" id="respage" href="{{ url_for('intronRes') }}?query_id={{query_id}}">Result Page</a>
+	
+	
+	<script>
+	
+				document.getElementById("finished").style.visibility = "visible";
+			    	document.getElementById("respage").style.visibility = "visible";
+			       
+
+	</script>
+
+
+
+      </div>
+      
+
+      
+{% endblock %}

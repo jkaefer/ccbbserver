@@ -1,0 +1,69 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+
+<div class="col-sm-9">
+        <h1>regSNP-Splicing</h1>
+        <p> regSNP-Splicing: Prioritizing disease causing synonymous SNVs</p>
+        <br></br>
+        
+	<form action="{{ url_for('spliceSub') }}"  method="post" enctype="multipart/form-data" id="input_form">
+	   <div class="row">
+            <div class="form-group col-xs-6">
+			  <label for="TextArea">Paste input here (<a href="javascript:;" id="spliceexample">use example</a>)</label>
+              <textarea name="input_text" class="form-control" id="TextArea" rows="10" placeholder="#chr:position  reference_allele  alternative_allele"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="InputFile">Or upload a file</label>
+            <input type="file" name="input_file" class="form-control-file" id="InputFile" aria-describedby="fileHelp">
+            <small id="fileHelp" class="form-text text-muted">size limit: 10K rows</small>
+            <b>** Note:</b> <Font style="BACKGROUND-COLOR: #87CEFA">   Input file MUST be in <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF</a> format. 
+          </div>
+          
+	  
+		
+	<div class="form-group">
+		<b>Select features to be displayed on result page:</b><br></br>
+		<p><input type="checkbox" name="attribute" value="exonIntron" checked> Length of involved exon and neighboring introns</input></p>
+		<p><input type="checkbox" name="attribute" value="proximity" checked> Proximity to donor/acceptor sites</input></p>
+		<p><input type="checkbox" name="attribute" value="evolution" checked> conservation of +/- 7bp around variant</input></p>
+		<p><input type="checkbox" name="attribute" value="junction" checked> Junction sites strength</input><p>
+		<p><input type="checkbox" name="attribute" value="junc_change" checked> change of junction score</input></p>
+		<p><input type="checkbox" name="attribute" value="sfrs"> Splicing factors matching score</input></p>
+		<p><input type="checkbox" name="attribute" value="RBP_mag"> Magnitude of changing of RNA binding proteins'(RBPs) binding affinity(Caution: 201 features) </input></p>
+		<p><input type="checkbox" name="attribute" value="RBP_prob"> post-prob of changing of RBPs' binding affinity(Caution: 201 features)</input></p>
+		<p><input type="checkbox" name="attribute" value="cluster_score"> cluster score - changing of ESE/ESS motifs</input></p>
+		<p><input type="checkbox" name="attribute" value="PTM" checked> PTM - Post-translational modification sites</input></p>
+		<p><input type="checkbox" name="attribute" value="Pfam" checked> Pfam - percenrage of Pfam domains coverage </input></p>
+		<p><input type="checkbox" name="attribute" value="disorder"> Disorder score</input></p>
+		<p><input type="checkbox" name="attribute" value="ss"> SS - Secondary structure of affected protein region</input></p>
+		<p><input type="checkbox" name="attribute" value="asa"> ASA - Accessible Surface Area</input></p>
+		<p><input type="checkbox" name="attribute" value="ef"> EF score - probability of single strandness around variant</input></p>
+		<p><input type="checkbox" name="attribute" value="rna2nd"> RNA 2nd structure change</input></p>
+	</div>
+	<div class="row">
+		    <div class="form-group col-xs-6">
+		      <label for="InputID">Job Descriptor</label>
+		      <input name="userid" class="form-control" id="InputID" aria-describedby="userhelp" placeholder="Enter Description">
+		      <small id="userhelp" class="form-text text-muted">(For organizing jobs)</small>
+			</div>	
+		</div>
+
+	<div class="row">
+            <div class="form-group col-xs-6">
+              <label for="InputEmail">Email address</label>
+              <input type="email" name="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">(Optional. If provided, notification will be sent to this email.)</small>
+            </div>
+          </div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+	
+
+	</form>
+        
+        
+        </div>
+      
+{% endblock %}

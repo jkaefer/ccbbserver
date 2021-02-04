@@ -1,0 +1,40 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+<div class="col-sm-9">
+        <h1>CCBB Tool Suite</h1>
+        <img src="https://exonimpact.ccbb.iupui.edu/pic/center_logo.png" style="margin-left:25%" > </img>
+        <br/>
+        <br/>
+        <p style="margin-left:10%">Select a tool from the dropdown&Tab; <b>or</b> &Tab; Search previous jobs by keyword</p>
+        <br/>
+        <br/>
+
+        <input id="userin" style="margin-left:25%;width:150px" class="autocomplete"  placeholder="Keyword" type="text"   />
+        
+        <script>
+	/*
+        $(document).ready(function(){
+	   $.ajax({
+		    url: "/getData",
+		    dataType: "json",
+		    success: function(data){
+			console.log(data);
+		    }
+	    });
+	 });*/
+	 
+        //var eg=JSON.parse('[{"fname": "Splicejob_2020-12-03-01-50-10"}, {"fname": "Splicejob_2020-12-03-08-25-41"}]');
+        //console.log(eg);
+        //var files = JSON.parse('a');
+        //console.log(files);
+        
+        </script>
+      </div>
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.1/lodash.min.js'></script>
+  <script src='https://unpkg.com/fuse.js@2.5.0/src/fuse.min.js'></script>
+  <script src="{{ url_for('static', filename='js/filesAccess.js') }}"></script>
+  <!--<script src="{{ url_for('static', filename='js/index.js') }}"></script>-->
+      
+{% endblock %}

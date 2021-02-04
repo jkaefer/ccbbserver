@@ -1,0 +1,308 @@
+{% extends "intronbase.html" %}
+
+{% block content %}
+
+  
+  
+
+	
+
+
+
+
+<script type="text/javascript">
+
+//from php
+//$cur_time=time();
+//$query_file_name="query".$cur_time;
+
+var query_id = "{{query_id}}";
+//var filename = "{{filename}}";
+
+
+
+//document.getElementById("feature_label").style.cursor="pointer";
+
+var textareas = document.getElementsByTagName('textarea');
+var count = textareas.length;
+for(var i=0;i<count;i++){
+    textareas[i].onkeydown = function(e){
+        if(e.keyCode==9 || e.which==9){
+            e.preventDefault();
+            var s = this.selectionStart;
+            this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s+1;
+        }
+    }
+}
+
+
+
+//document.getElementById('download_tsv').setAttribute("href",'127.0.0.1:5000/app/ExonImpact/usr_input/job_'+query_id+'/'+file_name+'_features.csv.predict.tsv' );
+//document.getElementById('download_csv').setAttribute("href","ExonImpact/usr_input/job_"+query_id );
+
+$(document).ready(function() {
+var selected = [];
+
+    $('#resultTable').DataTable( {
+
+        "processing": true,
+        "serverSide": false,
+        //"ajax": '/ExonImpact/'+query_file_name+'/'+query_file_name+'.predict.json.tsv',
+        "ajax": 'app/allJobs/Exonjob_'+query_id+'/query_features.csv.predict.json.tsv',
+
+		"columns": [
+			{
+        		"className": "cell-border",
+				"orderable":      false,
+                "data":           "                       ",
+                "defaultContent": '                       '},
+
+			{ "data": "transcript_id" },
+			{ "data": "raw_input" },
+			{ "data": "disease_probability" },
+            { "data": "phylop" },
+            { "data": "ss_1" },
+			{ "data": "ss_2" },
+			{ "data": "ss_3" },
+            { "data": "ss_4" },
+            { "data": "ss_5" },
+			{ "data": "ss_6" },
+			{ "data": "ss_7" },
+            { "data": "ss_8" },
+            { "data": "ss_9" },
+			{ "data": "ss_10" },
+			{ "data": "ss_11" },
+			{ "data": "ss_12" },
+            { "data": "asa_1" },
+            { "data": "asa_2" },
+			{ "data": "asa_3" },
+			{ "data": "disorder_1" },
+			{ "data": "disorder_2" },
+            { "data": "disorder_3" },
+            { "data": "disorder_4" },
+			{ "data": "disorder_5" },
+			{ "data": "disorder_6" },
+			{ "data": "disorder_7" },
+            { "data": "disorder_8" },
+            { "data": "disorder_9" },
+			{ "data": "disorder_10" },
+			{ "data": "disorder_11" },
+			{ "data": "disorder_12" },
+            { "data": "pfam1" },
+            { "data": "pfam2" },
+            { "data": "ptm" },
+            { "data": "proteinLength" }
+
+            ],
+			
+	"scrollX": true
+	} );
+	
+	var table = $('#resultTable').DataTable();
+	
+	$('#resultTable tbody').on( 'click', 'tr', function () {
+		if ( $(this).hasClass('info') ) {
+		    $(this).removeClass('info');
+		}
+		else {
+		    table.$('tr.info').removeClass('info');
+		    $(this).addClass('info');
+			}
+			var record = table.row(this).data();
+		console.log(record['#chrom'].substring(3));
+		browser.setLocation(record['#chrom'].substring(3), record['pos'] - 50, record['pos'] + 50);
+    	} );
+
+
+    
+	
+} );
+
+
+//var table = $('#example').DataTable();
+
+</script>
+
+  
+      <div class="col-sm-9">
+		<h1>ExonImpact</h1>
+		<!-- <p id="message"></p> -->
+		<div id="message" class="alert"></div>
+
+        </p>
+        <table id="event-desc" align="center">
+		<tr>
+			<td>Skipped Exon</td>
+			<td>A5SS</td>
+			<td>A3SS</td>
+			<td>Retained intron</td>
+		</tr>
+		<tr>
+
+			<td width="250px"><img src="app/ExonImpact/src/web/pic/SE_icon.png"></td>
+			<td width="250px"><img src="app/ExonImpact/src/web/pic/A5SS_icon.png"></td>
+			<td width="250px"><img src="app/ExonImpact/src/web/pic/A3SS_icon.png"></td>
+			<td width="250px"><img src="app/ExonImpact/src/web/pic/RI_icon.png"></td>
+		</tr>
+
+	</table>
+	</br>
+	</br>
+
+	<table id="resultTable" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+
+				<th></th>
+				<th>transcript_id</th>
+				<th>raw_input</th>
+				<th>disease_probability</th>
+				<th>phylop</th>
+				<th>ss_1</th>
+				<th>ss_2</th>
+				<th>ss_3</th>
+				<th>ss_4</th>
+				<th>ss_5</th>
+				<th>ss_6</th>
+				<th>ss_7</th>
+				<th>ss_8</th>
+				<th>ss_9</th>
+				<th>ss_10</th>
+				<th>ss_11</th>
+				<th>ss_12</th>
+				<th>asa_1</th>
+				<th>asa_2</th>
+				<th>asa_3</th>
+				<th>disorder_1</th>
+				<th>disorder_2</th>
+				<th>disorder_3</th>
+				<th>disorder_4</th>
+				<th>disorder_5</th>
+				<th>disorder_6</th>
+				<th>disorder_7</th>
+				<th>disorder_8</th>
+				<th>disorder_9</th>
+				<th>disorder_10</th>
+				<th>disorder_11</th>
+				<th>disorder_12</th>
+				<th>pfam1</th>
+				<th>pfam2</th>
+				<th>ptm</th>
+				<th>proteinLength</th>
+			</tr>
+
+		</thead>
+		
+	</table>
+	
+	
+	
+	<a id="feature_label" data-toggle="collapse" data-target="#feature">Click
+		to see feature symbols meaning</a>
+
+	<div id="feature" class="collapse">
+		<pre>
+</br>ss_1                     max probability of all amino acids' most probable structure in translated amino acid sequence.
+</br>ss_2                     min probability of all amino acids' most probable structure in translated amino acid sequence.
+</br>ss_3                     average probability of all amino acids' most probable structure in translated amino acid sequence
+</br>ss_4                     average probability of the amino acid in beta sheet structure.
+</br>ss_5                     min probability of the amino acid in beta sheet structure.
+</br>ss_6                     max probability of the amino acid in beta sheet structure.
+</br>ss_7                     average  probability of the amino acid in coil.
+</br>ss_8                     min  probability of the amino acid in coil.
+</br>ss_9                     max  probability of the amino acid in coil
+</br>ss_10                    ave probability of the amino acid in alpha-helix structure.
+</br>ss_11                    min probability of the amino acid in alpha-helix structure.
+</br>ss_12                    max probability of the amino acid in alpha-helix structure.
+
+</br>asa_1                    average ASA in translated amino acid sequence.
+</br>asa_2                    min ASA in translated amino acid sequence.
+</br>asa_3                    max ASA in translated amino acid sequence.
+
+</br>disorder_score_1         min disorder score in exons' translated amino acid sequence.
+</br>disorder_score_2         max disorder score in exons' translated amino acid sequence.
+</br>disorder_score_3         average score of disorder region.
+</br>disorder_score_4         average score of structured region.
+</br>disorder_score_5         times of switch between disorder region and structured region.
+</br>disorder_score_6         average disorder region length.
+</br>disorder_score_7         average structured region length.
+</br>disorder_score_8         max disorder region length.
+</br>disorder_score_9         min disorder region length.
+</br>disorder_score_10        max structured region length.
+</br>disorder_score_11        min structured region length.
+</br>disorder_score_12        average disorder score of the exon.
+
+</br>plylop                   average phylop score of the exon.
+</br>pfam1                    domain coverage percentile of the exon.
+</br>pfam2                    overlap percentile with domain.
+</br>ptm                      normalized number of PTM sites in the exon.
+</pre>
+	</div>
+
+
+
+	<div id="runPart">
+	</div>
+	
+	<img src="ExonImpact/src/web/lib/xx.jpg" name="leftPanelButton" width="20" height="20"
+		border="0" alt="javascript button" onClick="return leftPanelExpand();"
+		onMouseEnter="return leftPanelButtonOver();">expand the left
+		control panel Control: drag and scroll
+
+
+		<div id="leftPanelControl" onMouseLeave="return leftPanelButtonOut();">
+
+
+			<input type="checkbox" name="GenePart" value="GenePart" checked=true
+				onchange="checkBox(this)">gene <input type="checkbox"
+				name="proteinPart" value="proteinPart" checked=true
+				onchange="checkBox(this)">protein <input type="checkbox"
+					name="transcriptPart" value="transcriptPart" checked=true
+					onchange="checkBox(this)">transcripts <br />go to a
+						coordinate position <input type="text" name="coordinate position"
+						id="coordiantePosition" value=""> <input type="button"
+							name="go" id="gotoposition" value="Go"> 
+							<a id="download_xml" href=''>Download the XML datafile.</a> <a href=''>
+							<a id="download_tsv" href=''>Download prediction result file.</a>
+							<a id="download_csv" href=''>Download raw feature file.</a>
+							
+									 <br> <br>
+		</div>
+		<p></p>
+
+
+		<div id="mainPage">
+			<p></p>
+			<hr></hr>
+			<hr></hr>
+			<p class="modualTitle">Exons Structure</p>
+			<br> <br>
+
+					<div id="geneVisualModule">
+						<canvas id="geneVisual" width="900" height="200" tabindex='1'>
+					</div>
+
+					<p></p>
+					<hr></hr>
+					<hr></hr>
+					<p class="modualTitle">Protein Functions</p> <br>
+						<div id="proteinVisualModule1">
+							<canvas id="proteinVisual1" width="900" height="200" tabindex='2'>
+						</div>
+
+						<p></p>
+						<hr></hr>
+						<hr></hr>
+						<p class="modualTitle">Gene Structure</p> <br> <br>
+								<div id="transcriptsVisualModule">
+									<canvas id="transcriptsVisual" width="900" height="150"
+										tabindex='3'>
+								</div>
+		</div>
+
+		<hr></hr>
+        <div id="svgHolder"></div>
+      
+  
+{% endblock %}

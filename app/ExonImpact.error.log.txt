@@ -1,0 +1,2 @@
+2021-01-28 05:49:01 ERROR Exon_transcript_feature:170 - The transcrpt's protein sturctures is zero or target protein region is 0: NM_001166460
+2021-01-28 05:57:57 ERROR Exon_transcript_feature:170 - The transcrpt's protein sturctures is zero or target protein region is 0: NM_001166460

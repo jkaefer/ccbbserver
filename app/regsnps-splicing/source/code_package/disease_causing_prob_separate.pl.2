@@ -1,0 +1,236 @@
+#!/usr/bin/perl
+use warnings;
+  
+my $desp  = $ARGV[0];
+my $type  = $ARGV[1];
+my $qfile = $ARGV[2];
+my $job   = $ARGV[3];
+
+my $infile = "$job/$desp.snp.ref.mut.seq.proximity";
+my %snp = ();
+
+#open(O1, ">s1")||die "$!";
+#print O1 "0 done\n";
+my @snp_order = ();
+open(IN,"$qfile" )||die "$!"; ## 'query' or uploaded file
+while(<IN>){
+	s/\s+$//;
+	my @line = split(/\s+/, $_);
+	#$snp{$line[0]}{'type'} = $line[3];
+	if ($#line == 2){
+		$snp{"$line[0]:$line[1]-$line[2]"}{'prob'} = -1; ## all initialized to be -1. Some will not have prediction
+		$snp{"$line[0]:$line[1]-$line[2]"}{'ss'}   = -1; ## exonbody or splicing site
+		push @snp_order, "$line[0]:$line[1]-$line[2]";
+	}elsif($#line > 2 and $line[3] =~ /[ACGT]+/ and $line[4] =~ /[ACGT]+/){
+		my @alta = split(/,/, $line[4]);
+		foreach my $al (@alta){
+		    $snp{"chr$line[0]:$line[1]:$line[3]-$al"}{'prob'} = -1;
+		    $snp{"chr$line[0]:$line[1]:$line[3]-$al"}{'ss'}   = -1;
+                    push @snp_order, "chr$line[0]:$line[1]:$line[3]-$al"; 
+		}
+	}
+}
+close IN;
+
+
+#print O1 "1 done\n";
+
+
+
+open(IN, $infile) ||die "$!";
+while(<IN>){
+	s/\s+$//;
+	 my @line =  split(/\t/, $_);
+	 $snp{$line[2]}{'transcript'} = $line[1];
+	#$snp{$line[2]}{'maf'} = $line[$#line];
+}
+close IN;
+
+my $offset = 0;
+if($type eq 'ss'){
+	$offset = 14;
+}else{
+	$offset = 15;
+}
+my @available_snp = ();
+
+#print O1 "2 done\n";
+
+## +++++++++++++++++++++ check which SNPs have been predicted  ++++++++++++++++++++++++
+open(IN, "$job/$desp.weka.data.$type.info")||die "$!";
+while(<IN>){
+	s/\s+$//;
+	my @line = split(/,/, $_);
+	push @available_snp, $line[$offset];
+	$snp{$line[$offset]}{'ss'} = 1;
+	if($type eq 'ss'){
+		$snp{$line[$offset]}{'exon_length'} 		= $line[1];
+		$snp{$line[$offset]}{'proximity_2_acceptor'} 	= $line[15];
+		$snp{$line[$offset]}{'proximity_2_donor'} 	= $line[16];
+		$snp{$line[$offset]}{'junction_score_acceptor'} = $line[3];
+		$snp{$line[$offset]}{'junction_score_donor'} 	= $line[4];
+		if($line[5] - $line[3] ==0){
+			$snp{$line[$offset]}{'junction_score_change'} = $line[6]-$line[4];
+		}else{
+			 $snp{$line[$offset]}{'junction_score_change'} = $line[5]-$line[3];
+		}
+		$snp{$line[$offset]}{'evolution'} 		= $line[18];
+		$snp{$line[$offset]}{'ave_disorder_score'} 	= $line[436];
+		$snp{$line[$offset]}{'ave_ASA'} 		= sprintf("%.2f",$line[449]);
+		$snp{$line[$offset]}{'ave_SS_coil'}		= $line[443];
+	}else{ ## exon body
+		$snp{$line[$offset]}{'exon_length'} 		= $line[1];
+		$snp{$line[$offset]}{'proximity_2_acceptor'} 	= $line[16] ;
+		$snp{$line[$offset]}{'proximity_2_donor'} 	= $line[17];
+		$snp{$line[$offset]}{'junction_score_acceptor'} = $line[3];
+		$snp{$line[$offset]}{'junction_score_donor'} 	= $line[4];
+		$snp{$line[$offset]}{'junction_score_change'} 	= 0;
+		$snp{$line[$offset]}{'evolution'} 		= $line[19];
+		$snp{$line[$offset]}{'ave_disorder_score'} 	= $line[437];
+		$snp{$line[$offset]}{'ave_ASA'} 		= sprintf("%.2f",$line[450]);
+		$snp{$line[$offset]}{'ave_SS_coil'} 		= $line[444];
+
+	}
+}
+close IN;
+
+my $snpid = 0;
+if($type eq 'inner'){
+	$type = 'exonBody';
+}
+if ($type eq 'ss'){
+	$type = "splicingSite";
+}
+
+#print O1 "3 done\n";
+my @ss_stat = ();
+my @eb_stat = ();
+open(SS, "./source/code_package/model/stat.ss")||die "$!";
+while(<SS>){
+	s/\s+$//;
+	my @line = split(/,/, $_);
+	push @ss_stat, [@line];
+}
+close SS;
+
+open(EB, "./source/code_package/model/stat.exonbody")||die "$!";
+while(<EB>){
+	s/\s+$//;
+	my @line = split(/,/, $_);
+	push @eb_stat, [@line];
+}
+close EB;
+
+
+open(PRB, "$job/$desp.$type.prediction")||die "$!";
+while(<PRB>){
+	s/\s+$//;
+	s/^\s+//;
+	if(/^\d/){
+		my @line = ();
+		if(/\+/){
+			s/\+//;
+			@line = split(/\s+/, $_);
+		}else{
+			@line = split(/\s+/, $_);
+			$line[$#line] = 1- $line[$#line];
+		}
+		$snp{$available_snp[$snpid]}{'prob'} = $line[$#line];
+		#$snpid +=1;
+		
+		my @stat = ();
+		if($type eq 'exonBody'){
+			@stat = @eb_stat;
+		}else{
+			@stat = @ss_stat;
+		}
+
+		for my $i (0..$#stat){
+			my @cutoff = @{$stat[$i]};
+			my $diff = abs($snp{$available_snp[$snpid]}{'prob'} - $cutoff[$#cutoff]);
+			my $fdr = -1;
+			if( $diff <= 0.01){
+				$fdr = $cutoff[2]/($cutoff[0]+$cutoff[2]);$fdr = sprintf("%.3f",$fdr);
+				$snp{$available_snp[$snpid]}{'FDR'} = $fdr;
+				last;
+			}elsif( $diff <= 0.02){
+					$fdr = $cutoff[2]/($cutoff[0]+$cutoff[2]);$fdr = sprintf("%.3f",$fdr);
+					$snp{$available_snp[$snpid]}{'FDR'} = $fdr;
+			}elsif( $diff <= 0.03){
+				if($fdr == -1){
+					$fdr = $cutoff[2]/($cutoff[0]+$cutoff[2]);$fdr = sprintf("%.3f",$fdr);
+					$snp{$available_snp[$snpid]}{'FDR'} = $fdr;}
+			}else{};
+		}
+		$snpid +=1;
+	}
+}
+close PRB;
+
+#print O1 "4 done\n";
+
+my @user_att = ();
+open(CAT, "$job/checked_attributes")||die "$!";
+while(<CAT>){
+	s/\s+$//;
+if(/exonIntron/){
+	push @user_att, "exon_intron_len_1","exon_intron_len_2","exon_intron_len_3";
+}elsif(/proximity/){
+	push  @user_att, "proximity_3", "proximity_5";
+}elsif(/evolution/){
+	push  @user_att, "evolution";
+}elsif(/junction/){
+	push  @user_att, "junction_score_1", "junction_score_2";
+}elsif(/junc_change/){
+	push  @user_att, "junction_score_change";
+}elsif(/sfrs/){
+	push  @user_att, "sfrs1_3", "sfrs1_5", "sfrs2_3", "sfrs2_5", "sfrs5_3", "sfrs5_5", "sfrs6_3", "sfrs6_5";
+}elsif(/cluster_score/){
+	push  @user_att, "cluster_score_change", "cluster_score_ref"; 
+}elsif(/PTM/){
+	push  @user_att, "ptm_1";
+}elsif(/Pfam/){
+	push  @user_att, "pfam_coverage";
+}elsif(/disorder/){
+	push  @user_att, "disorder_score_12";
+}elsif(/ss/){
+	push  @user_att, "ave_SS_coil";
+}elsif(/asa/){
+	push  @user_att, "ave_ASA";
+}elsif(/ef/){
+	push  @user_att, "EF_score";
+}elsif(/rna2nd/){
+	push  @user_att, "RNA_2nd_struct";
+}else{}
+}
+close CAT;
+
+
+open(OUT, ">$job/$desp.exonic_snp_disease_causing_probabilty.$type")||die "$!";
+print OUT "chr pos ref alt disease_probability FDR transcript";
+# exon_length proximity_2_acceptor proximity_2_donor junction_score_acceptor junction_score_donor junction_score_change evolution ave_disorder_score ave_ASA ave_SS_coil\n";
+foreach my $att (@user_att){
+	print OUT " $att";
+}
+print OUT "\n";
+
+foreach my $ss (keys %snp){
+        my @loc = split(/:|-/, $ss);
+	if($snp{$ss}{'prob'} != -1){
+		my $a = $loc[1]-1;
+		#print OUT "$loc[0] $loc[1] $loc[2] $loc[3] $snp{$ss}{'prob'} $snp{$ss}{'FDR'} $snp{$ss}{'transcript'} $snp{$ss}{'exon_length'} $snp{$ss}{'proximity_2_acceptor'} $snp{$ss}{proximity_2_donor} $snp{$ss}{'junction_score_acceptor'} $snp{$ss}{'junction_score_donor'} $snp{$ss}{'junction_score_change'} $snp{$ss}{'evolution'} $snp{$ss}{'ave_disorder_score'} $snp{$ss}{'ave_ASA'} $snp{$ss}{'ave_SS_coil'}\n";
+		print OUT "$loc[0] $loc[1] $loc[2] $loc[3] $snp{$ss}{'prob'} $snp{$ss}{'FDR'} $snp{$ss}{'transcript'}";
+		foreach my $att (@user_att){
+			print OUT " $snp{$ss}{$att}";
+		}
+		print OUT "\n";
+	}else{
+		print OUT "$loc[0] $loc[1] $loc[2] $loc[3] NA NA $snp{$ss}{'transcript'}\n";
+	}
+}
+
+close OUT;
+#close MAF;
+#print O1 "5 done\n";
+
+#close O1;
