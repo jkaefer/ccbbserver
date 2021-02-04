@@ -1,6 +1,9 @@
 # ccbbserver
 Makes use of regSNPs-Intron at <https://github.com/linhai86/regsnp_intron>, ExonImpact at <https://github.com/regSNPs/ExonImpact> and algorithms designed by the regSNPs-Splicing project locatable at <https://pubmed.ncbi.nlm.nih.gov/28391525/>
 
+## Stack Diagram
+![alt text](https://github.com/jkaefer/ccbbserver/blob/master/diagram.png)
+
 
 ## Installation
 1. An Anaconda environment is needed with python 3.7 or greater and the required packages are contained within the file py37list.txt, these can be batch installed by  
